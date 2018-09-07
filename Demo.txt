@@ -1,0 +1,257 @@
+
+
+<table class="table" style="width: 100%; max-width: 100%; margin-bottom:-3px">
+    <tr>
+        <td style="width:20px;border-top-width: 0px;"><img id="imgBannerLogo" src="/Images/ThemeGeneric/CubeLogo.jpg" alt="Img not found" width="50px" height="45px" /></td>
+        <td style="width:20px;border-top-width: 0px;">
+            <div id="tbcBannerTitle" ng-transclude class="col-lg-2" style="padding : 10px 0px 0px 0px;margin-right:2.33333%;">
+                Limit Management
+            </div>
+        </td>
+        <td style="border-top-width: 0px;"><img id="imgBannerBackGround" src="/Images/ThemeGeneric/RCBanerGradient.png" height="45px" width="100%" alt="Img not found" /></td>
+    </tr>
+</table>
+
+<div class="row" style="padding-right: 0px;padding-left: 3px;padding-bottom: 2px">
+    <div class="input-group col-lg-4">
+
+        <div class="col-lg-3" style="margin-left: -15px;
+    width: 50%;">
+            <dx-autocomplete placeholder="select counterparty..."
+                             [dataSource]="AutoTrades"
+                             valueExpr="TradingCounterparty"
+                             [showClearButton]="true"
+                             [searchTimeout]="500"
+                             [(value)]="TradingCounterparty"
+                             (onValueChanged)="updateLimit($event)"
+                             [(opened)]="opened" style="width:110%">
+            </dx-autocomplete>
+        </div>
+        <div class="col-lg-3">
+            <dx-button text="GO"
+                       (onClick)="GOButtonClicked($event)" style="background-color: #99CCFF;font-weight:bold;color:white">
+            </dx-button>
+        </div>
+    </div>
+</div>
+   
+<div class="row  col-lg-12" style="padding-right: 0px;padding-left: 3px;">
+    
+    <div class="col-lg-2" style="border-right: 10px solid #ddd;">
+        <div id="divDataAreaHeader" class="row" style="width: 117%;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;border-left: 1px solid #ddd;font-size: larger;">Legal Hierarchy</div>
+        <div class="row">
+            <div>
+                <dx-tree-view id="simple-treeviews"
+                              [dataSource]="tradingCounterpartyLegalHierarchyOwnerships"
+                              keyExpr="ID"
+                              displayExpr="ChildTradingCounterparty"
+                              itemsExpr="TradingCounterpartyLegalHierarchyOwnershippings" (onItemClick)="selectItem($event)" style="height:120px; width: 100%;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;border-left: 1px solid #ddd;"></dx-tree-view>
+            </div>
+        </div>
+        <div id="divDataAreaHeader" class="row" style="width: 117%;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;border-left: 1px solid #ddd;font-size: larger;">PCG Hierarchy</div>
+        <div class="row">
+            <div>
+                <dx-tree-view id="simple-treeviewsa"
+                              [dataSource]="oTradingCounterpartyPCGHierarchyEFs"
+                              keyExpr="ID"
+                              displayExpr="Header"
+                              itemsExpr="TradingCounterpartyPCGHierarchyEFs" style="height:110px; width: 100%;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;border-left: 1px solid #ddd;"></dx-tree-view>
+            </div>
+        </div>
+        <div id="divDataAreaHeader" class="row" style="width: 117%;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;border-left: 1px solid #ddd;font-size: larger;">TE Hierarchy</div>
+        <div class="row">
+            <div>
+                <dx-tree-view id="simple-treeview1"
+                              [dataSource]="tradingEntityLegalHierarchyOwnerships"
+                              dataStructure="plain"
+                              parentIdExpr="lParentTradingEntityId"
+                              keyExpr="Hierarchy"
+                              displayExpr="ChildTradingEntity"
+                              style="height:110px;width: 100%;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;border-left: 1px solid #ddd;"></dx-tree-view>
+            </div>
+
+        </div>
+        <div id="divDataAreaHeader" class="row" style="width: 117%;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;border-left: 1px solid #ddd;font-size: larger;">Set Overall Limit to</div>
+        <div class="row" style="height:45px">
+            
+
+            <div class="col-lg-3" style="margin-top: 8px;">
+                <dx-check-box [value]="false"></dx-check-box>
+
+            </div>
+            <div class="col-lg-9" style="margin-top:4px; padding-right: 4px;">
+                <dx-select-box [dataSource]="SetOverAllLimitToEntities"
+                               valueExpr="lTradingEntityId"
+                               displayExpr="TradingEntityName"
+                               placeholder="Entities..."
+                               (onFocusIn)="add($event)"
+                               style="background-color:lightgray"></dx-select-box>
+            </div>
+        </div>
+        <div id="divDataAreaHeader" class="row" style="width: 117%;border-right: 1px solid #ddd;border-bottom: 1px solid #ddd;border-left: 1px solid #ddd;font-size: larger;">Set Dates</div>
+        <div class="row" style="height:45px">
+            
+            <div class="col-lg-6" style="margin-left:-11px;margin-top:8px;"><span>Last Review Date</span></div>
+            <div class="col-lg-6" style="margin-left:-28px;margin-top:4px;">
+                <dx-date-box [value]="now" type="date" [width]="126.297">
+                </dx-date-box>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-lg-10" style="padding-right: 0px;padding-left: 0px;">
+        <dx-data-grid id="gridContainer"
+                      [dataSource]="DataSource"
+                      [masterDetail]="{ enabled: true, template: 'detail' }"
+                      keyExpr="lTradingLimitId"
+                      (onEditorPreparing)="onEditorPreparing($event)"
+                      (onRowInserting)="onRowInserting($event)"
+                      (onRowInserted)="onRowInserted($event)"
+                      (onRowUpdating)="onRowUpdating($event)"
+                      (onRowRemoving)="onRowRemoving($event)"
+                      (onRowRemoved)="onRowRemoved($event)"
+                      (onInitNewRow)="onInitNewRow($event)"
+                      (onRowExpanding)="onRowExpanding($event)"
+                      (onRowExpanded)="onRowExpanded($event)"
+                      columnAutoWidth="true">
+            <dxo-group-panel [visible]="true"></dxo-group-panel>
+            <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
+            <dxo-paging [pageSize]="3"></dxo-paging>
+            <dxo-pager [showPageSizeSelector]="true"
+                       [allowedPageSizes]="[3]"
+                       [showInfo]="true">
+            </dxo-pager>
+            <dxo-filter-row [visible]="showFilterRow"></dxo-filter-row>
+
+            <dxo-editing mode="batch"
+                         [allowAdding]="true"
+                         [allowUpdating]="true"
+                         [allowDeleting]="true">
+            </dxo-editing>
+
+            <dxi-column dataField="lTradingCounterpartyId"
+                        caption="Counter Party" [width]="200">
+                <dxo-lookup [dataSource]="CounterParties"
+                            displayExpr="TradingCounterpartyName"
+                            valueExpr="lTradingCounterpartyId">
+                </dxo-lookup>
+            </dxi-column>
+            <dxi-column dataField="lOurEntityId"
+                        caption="Trading Entity " [width]="200">
+                <dxo-lookup [dataSource]="TradingEntities"
+                            displayExpr="TradingEntityName"
+                            valueExpr="lTradingEntityId">
+                </dxo-lookup>
+            </dxi-column>
+
+            <dxi-column dataField="lLimitTypeId"
+                        caption="Limit Type" [width]="200">
+                <dxo-lookup [dataSource]="LimitTypes"
+                            displayExpr="LimitTypeName"
+                            valueExpr="lLimitTypeId">
+                </dxo-lookup>
+            </dxi-column>
+
+            <dxi-column dataField="lSubLimitTypeId"
+                        caption="Sub Limit Type" [width]="200">
+                <dxo-lookup [dataSource]="SubLimitTypes"
+                            displayExpr="SubLimitTypeName"
+                            valueExpr="lSubLimitTypeId">
+                </dxo-lookup>
+            </dxi-column>
+
+            <dxi-column dataField="lTradingProductId"
+                        caption="Trading Product" [width]="200">
+                <dxo-lookup [dataSource]="TradingProducts"
+                            displayExpr="TradingProductName"
+                            valueExpr="lTradingProductId">
+                </dxo-lookup>
+            </dxi-column>
+
+            <dxi-column dataField="lTradingCategoryId"
+                        caption="Trading Category" [width]="200">
+                <dxo-lookup [dataSource]="Categories"
+                            displayExpr="TradingCategoryName"
+                            valueExpr="lTradingCategoryId">
+                </dxo-lookup>
+            </dxi-column>
+
+            <dxi-column dataField="LimitValue" [width]="150" dataType="number" caption="Limit Value"></dxi-column>
+
+            <dxi-column dataField="lLimitValueCurrencyId"
+                        caption="Currency/Unit" [width]="150">
+                <dxo-lookup [dataSource]="Currencies"
+                            displayExpr="CurrencyName"
+                            valueExpr="lCurrencyId">
+                </dxo-lookup>
+            </dxi-column>
+
+            <dxi-column dataField="lTenorTypeId"
+                        caption="Tenor Type" [width]="200">
+                <dxo-lookup [dataSource]="TenorTypes"
+                            displayExpr="TenorTypeName"
+                            valueExpr="lTenorTypeId">
+                </dxo-lookup>
+            </dxi-column>
+
+            <dxi-column dataField="Period" dataType="number" caption="Period"></dxi-column>
+
+            <dxi-column dataField="lPeriodTypeId"
+                        caption="Period Type" [width]="200">
+                <dxo-lookup [dataSource]="PeriodTypes"
+                            displayExpr="PeriodTypeName"
+                            valueExpr="lPeriodTypeId">
+                </dxo-lookup>
+            </dxi-column>
+
+            <dxi-column dataField="LimitStartDate" [width]="200" dataType="date" caption="Limit Start Date"></dxi-column>
+            <dxi-column dataField="LimitEndDate" [width]="200" dataType="date" caption="Limit End Date"></dxi-column>
+
+
+            <dxi-column dataField="BUY" [width]="200" dataType="number" caption="Buy"></dxi-column>
+            <dxi-column dataField="SELL" [width]="200" dataType="number" caption="Sell"></dxi-column>
+
+            <div *dxTemplate="let limit of 'detail'">
+                <span> Comments </span>
+                <dx-text-area [height]="50" [width]="400"
+                              [maxLength]="maxLength"
+                              [(value)]="limit.data.TradingLimitComment"
+                              (OnRowExpanding)="OnRowExpanding($event)">
+                </dx-text-area>
+            </div>
+
+        </dx-data-grid>
+    </div>
+
+
+    <div style="border:2px solid #ddd">
+        <div class="row">
+            
+        </div>
+    </div>
+    <div class="col-sm-3">
+
+    </div>
+    <table class="table" style="width:100%">
+        <tr>
+            <td style="width:97%;border-top-width: 0px;"></td>
+            <td style="width:10%;padding-right: 0px;padding-left: 0px;border-top-width: 0px;padding-top:1px;padding-bottom:1px;"> <dx-button text="Save"
+           (onClick)="SaveButtonClicked()" style="background-color: #99CCFF;font-weight:bold;color:white">
+</dx-button></td>
+            <td style="width:10%;padding-right: 6px;padding-left: 0px;border-top-width: 0px;padding-top:1px;padding-bottom:1px;"><dx-button text="Cancel"
+           (onClick)="CancelButtonClicked()" style="background-color: #99CCFF;font-weight:bold;color:white">
+</dx-button></td>
+        </tr>
+
+    </table>
+    <!--<div class="col-lg-2">
+        <dx-button text="Save"
+                   (onClick)="SaveButtonClicked()" style="background-color: #99CCFF;font-weight:bold;color:white">
+        </dx-button>
+
+        
+    </div>-->
+</div>
+
+
